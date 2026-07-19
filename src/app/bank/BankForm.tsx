@@ -67,7 +67,7 @@ export function BankForm() {
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value as Priority)}
-          className="field sm:w-36"
+          className="field sm:w-44"
         >
           {PRIORITIES.map((p) => (
             <option key={p} value={p} className="bg-noir-card">
