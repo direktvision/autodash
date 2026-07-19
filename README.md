@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TA Auto — Content Dashboard
 
-## Getting Started
+Content planning and production tracking for TA Auto: 5 pieces a week across
+TikTok, Instagram and Facebook, spanning three pillars (docuseries, showcase,
+conversion).
 
-First, run the development server:
+Next.js 16 (App Router) · TypeScript · Tailwind v4 · Supabase · Vercel.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Setup
+
+### 1. Database
+
+Open the Supabase dashboard → **SQL Editor** → **New query**, paste the whole of
+[`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql), and run
+it. That creates the enums, four tables plus a `settings` row, the seven seeded
+vlog segments, and the RLS policies.
+
+### 2. Environment
+
+`.env.local` is already populated with the project URL and anon key:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+SUPABASE_SERVICE_ROLE_KEY=      # unused by the app today
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The service role key is listed in the brief but nothing server-side needs it
+yet — every query runs through the anon role. Leave it blank until something
+actually requires elevated access.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+## Deploying
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx vercel            # link the project
+npx vercel --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the Vercel
+project's environment variables (Production + Preview). No build config needed.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+- **Reads** happen in server components via `src/lib/queries.ts`.
+- **Writes** are server actions in `src/lib/actions.ts`, which call
+  `revalidatePath` so the planner and dashboard stay in sync after a mutation.
+- Every page is `force-dynamic` — this is a live planning tool, and stale
+  content is worse than a round-trip.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### ISO weeks
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`src/lib/dates.ts` is the single source of truth for week maths. Two things it
+handles that naive implementations get wrong:
+
+- The ISO week-year is not the calendar year. 2027-01-01 falls in week 53 of ISO
+  year **2026**, and the planner has to agree with that or items vanish.
+- "Today" resolves against `Europe/Oslo`, not the host clock. Vercel runs in
+  UTC, which would otherwise roll the week over at the wrong hour.
+
+Setting a post date re-derives `year`/`week_number` in `updateItem`, so the
+scheduled date and the planner week can never disagree.
+
+## Known gaps
+
+- **No auth.** RLS grants the anon role full read/write, and the anon key ships
+  to the browser — anyone with the URL can read and write everything. Fine for a
+  single-user tool on an unpublished URL; replace the policies in the migration
+  with `auth.uid()`-scoped ones before this holds anything sensitive.
+- **Metrics are a snapshot, not a time series.** There's a unique index on
+  `(content_item_id, platform)` and logging upserts, so re-logging a platform
+  overwrites the previous numbers. `logged_at` records the last write. Tracking
+  growth over time would mean dropping that index and aggregating the latest row
+  per platform.
+- **Bank → week promotion is buttons, not drag-and-drop** ("This week" / "Next
+  week"), and shot list reordering uses up/down arrows. Both are deliberate: the
+  primary device is a phone held one-handed at a dealership, where drag targets
+  are unreliable.
