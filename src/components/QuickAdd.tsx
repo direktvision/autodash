@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { createBankItem } from '@/lib/actions';
 import { PILLARS, PILLAR_LABEL, type Pillar } from '@/lib/types';
+import { IconPlus, IconClose } from './icons';
 
 /**
  * Floating idea capture, mounted globally in the layout.
@@ -34,28 +35,32 @@ export function QuickAdd() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Add idea"
-        className="fixed bottom-20 right-4 z-50 h-14 w-14 rounded-full bg-gold text-2xl leading-none text-noir shadow-lg shadow-black/40 transition-transform hover:scale-105 active:scale-95 sm:bottom-6 sm:right-6"
+        className="fixed bottom-[calc(4.25rem+env(safe-area-inset-bottom))] right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gold text-noir transition-all duration-200 ease-out hover:bg-gold-bright active:scale-95 sm:bottom-6 sm:right-6"
+        style={{
+          boxShadow:
+            'inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,165,116,0.15)',
+        }}
       >
-        +
+        <IconPlus size={22} />
       </button>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center">
       <div
         className="card w-full max-w-md p-5"
         role="dialog"
         aria-label="Add idea to bank"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="display text-xl">Capture idea</h2>
+          <h2 className="display text-2xl">Capture idea</h2>
           <button
             onClick={() => setOpen(false)}
-            className="text-muted hover:text-bone"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/[0.05] hover:text-bone"
             aria-label="Close"
           >
-            ✕
+            <IconClose size={16} />
           </button>
         </div>
 
@@ -76,11 +81,7 @@ export function QuickAdd() {
             <button
               key={p}
               onClick={() => setPillar(p)}
-              className={`flex-1 rounded-xl border px-3 py-2 text-sm transition-colors ${
-                pillar === p
-                  ? 'border-gold/50 bg-gold/10 text-gold'
-                  : 'border-white/10 text-muted hover:text-bone'
-              }`}
+              className={pillar === p ? 'tile-active' : 'tile'}
             >
               {PILLAR_LABEL[p]}
             </button>

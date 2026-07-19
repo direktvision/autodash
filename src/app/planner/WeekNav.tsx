@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { shiftIsoWeek, type IsoWeek } from '@/lib/dates';
+import { IconChevronLeft, IconChevronRight } from '@/components/icons';
 
 export function WeekNav({
   current,
@@ -17,21 +18,21 @@ export function WeekNav({
       <Link
         href={href(shiftIsoWeek(current, -1))}
         aria-label="Previous week"
-        className="btn-ghost px-3 py-2"
+        className="btn-ghost w-11 px-0"
       >
-        ←
+        <IconChevronLeft size={16} />
       </Link>
       {!isCurrentWeek && (
-        <Link href="/planner" className="btn-ghost px-3 py-2 text-sm">
+        <Link href="/planner" className="btn-ghost text-xs">
           Today
         </Link>
       )}
       <Link
         href={href(shiftIsoWeek(current, 1))}
         aria-label="Next week"
-        className="btn-ghost px-3 py-2"
+        className="btn-ghost w-11 px-0"
       >
-        →
+        <IconChevronRight size={16} />
       </Link>
     </div>
   );

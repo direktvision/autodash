@@ -72,11 +72,7 @@ export function MetaEditor({
               <button
                 key={p}
                 onClick={() => patch({ pillar: p as Pillar })}
-                className={`flex-1 rounded-xl border px-2 py-2 text-xs transition-colors ${
-                  draft.pillar === p
-                    ? 'border-gold/50 bg-gold/10 text-gold'
-                    : 'border-white/10 text-muted hover:text-bone'
-                }`}
+                className={draft.pillar === p ? 'tile-active' : 'tile'}
               >
                 {PILLAR_LABEL[p]}
               </button>
@@ -144,11 +140,7 @@ export function MetaEditor({
               <button
                 key={p}
                 onClick={() => togglePlatform(p)}
-                className={`flex-1 rounded-xl border px-2 py-2 text-xs transition-colors ${
-                  draft.platforms.includes(p)
-                    ? 'border-gold/50 bg-gold/10 text-gold'
-                    : 'border-white/10 text-muted hover:text-bone'
-                }`}
+                className={draft.platforms.includes(p) ? 'tile-active' : 'tile'}
               >
                 {PLATFORM_LABEL[p]}
               </button>

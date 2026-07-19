@@ -50,22 +50,24 @@ export default async function PlannerPage({
         } />}
       />
 
-      <div className="card mb-6 flex items-center justify-between p-4">
+      <div className="card mb-6 flex items-center justify-between p-4 sm:p-5">
         <div>
-          <p className="text-sm text-muted">Planned this week</p>
-          <p className="display mt-0.5 text-2xl">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
+            Planned this week
+          </p>
+          <p className="display tnum mt-1.5 text-3xl leading-none">
             <span className={onTarget ? 'text-gold' : 'text-bone'}>
               {items.length}
             </span>
             <span className="text-faint"> / {target}</span>
           </p>
         </div>
-        <div className="flex gap-1" aria-hidden>
+        <div className="flex items-end gap-1.5" aria-hidden>
           {Array.from({ length: Math.max(target, items.length) }, (_, i) => (
             <span
               key={i}
-              className={`h-8 w-2 rounded-full ${
-                i < items.length ? 'bg-gold' : 'bg-white/10'
+              className={`w-[3px] rounded-full transition-all duration-300 ${
+                i < items.length ? 'h-9 bg-gold' : 'h-5 bg-white/[0.09]'
               }`}
             />
           ))}

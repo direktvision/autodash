@@ -37,7 +37,7 @@ export function AddSlot({ week }: { week: IsoWeek }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full rounded-2xl border border-dashed border-white/15 py-4 text-sm text-muted transition-colors hover:border-gold/40 hover:text-gold"
+        className="w-full rounded-2xl border border-dashed border-white/[0.12] py-4 text-sm text-muted transition-all duration-200 hover:border-gold/40 hover:text-gold active:scale-[0.99]"
       >
         + Add slot to week {week.week}
       </button>
@@ -61,11 +61,7 @@ export function AddSlot({ week }: { week: IsoWeek }) {
             key={p}
             type="button"
             onClick={() => setPillar(p)}
-            className={`flex-1 rounded-xl border px-2 py-2 text-xs transition-colors ${
-              pillar === p
-                ? 'border-gold/50 bg-gold/10 text-gold'
-                : 'border-white/10 text-muted hover:text-bone'
-            }`}
+            className={pillar === p ? 'tile-active' : 'tile'}
           >
             {PILLAR_LABEL[p]}
           </button>

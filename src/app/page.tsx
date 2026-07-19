@@ -12,22 +12,32 @@ import {
   formatDayLabel,
   todayIso,
 } from '@/lib/dates';
-import { ContentCard, EmptyState, PageHeader, StatusBadge } from '@/components/ui';
+import {
+  ContentCard,
+  EmptyState,
+  PageHeader,
+  SectionTitle,
+  StatusBadge,
+} from '@/components/ui';
 import { PRODUCTION_LABEL, type ContentItem, type ProductionLevel } from '@/lib/types';
 import { OnSiteDays } from './OnSiteDays';
 
 export const dynamic = 'force-dynamic';
 
+const nf = new Intl.NumberFormat('en-GB');
+
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="card p-4">
-      <p className="text-xs uppercase tracking-wider text-muted">{label}</p>
-      <p className="display mt-1 text-3xl text-bone">{value}</p>
+    <div className="card p-4 sm:p-5">
+      <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
+        {label}
+      </p>
+      <p className="display tnum mt-1.5 text-[2rem] leading-none text-bone sm:text-4xl">
+        {value}
+      </p>
     </div>
   );
 }
-
-const nf = new Intl.NumberFormat('en-GB');
 
 export default async function Home() {
   const week = currentIsoWeek();
@@ -59,23 +69,26 @@ export default async function Home() {
         title={`Week ${week.week}`}
         subtitle={formatWeekRange(week)}
         action={
-          <Link href="/planner" className="btn-ghost text-sm">
+          <Link href="/planner" className="btn-ghost">
             Open planner
           </Link>
         }
       />
 
       {/* This week ---------------------------------------------------------- */}
-      <section className="mb-8">
-        <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="display text-xl">This week</h2>
-          <span className="text-sm text-muted">
-            <span className={items.length >= target ? 'text-gold' : 'text-bone'}>
-              {items.length}
-            </span>{' '}
-            / {target} planned
-          </span>
-        </div>
+      <section className="mb-10">
+        <SectionTitle
+          aside={
+            <span className="tnum text-[13px] text-muted">
+              <span className={items.length >= target ? 'text-gold' : 'text-bone'}>
+                {items.length}
+              </span>
+              <span className="text-faint"> / {target} planned</span>
+            </span>
+          }
+        >
+          This week
+        </SectionTitle>
 
         {items.length === 0 ? (
           <EmptyState
@@ -92,36 +105,35 @@ export default async function Home() {
       </section>
 
       {/* Next filming day --------------------------------------------------- */}
-      <section className="mb-8">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="display text-xl">
-            Next filming day
-            {filming.date && (
-              <span className="ml-2 text-base text-gold">
-                {filming.date === today ? 'Today' : formatDayLabel(filming.date)}
-              </span>
-            )}
-          </h2>
-          <OnSiteDays days={settings.on_site_days} />
-        </div>
+      <section className="mb-10">
+        <SectionTitle aside={<OnSiteDays days={settings.on_site_days} />}>
+          Next filming day
+          {filming.date && (
+            <span className="ml-3 text-lg text-gold">
+              {filming.date === today ? 'Today' : formatDayLabel(filming.date)}
+            </span>
+          )}
+        </SectionTitle>
 
         {filming.scheduled.length === 0 && filming.unscheduled.length === 0 ? (
           <EmptyState message="Nothing waiting to be filmed." />
         ) : (
-          <div className="card divide-y divide-white/10">
+          <div className="card divide-y divide-white/[0.06]">
             {[...byLevel.entries()].map(([level, group]) => (
-              <div key={level} className="p-4">
-                <p className="mb-2 text-xs uppercase tracking-wider text-gold-dim">
+              <div key={level} className="p-4 sm:p-5">
+                <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-gold-dim">
                   {PRODUCTION_LABEL[level]}
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-2.5">
                   {group.map((item) => (
                     <li key={item.id}>
                       <Link
                         href={`/content/${item.id}`}
-                        className="flex items-center justify-between gap-3 hover:text-gold"
+                        className="group flex items-center justify-between gap-3"
                       >
-                        <span className="text-sm">{item.title}</span>
+                        <span className="text-sm text-bone transition-colors group-hover:text-gold-bright">
+                          {item.title}
+                        </span>
                         <StatusBadge status={item.status} />
                       </Link>
                     </li>
@@ -131,18 +143,20 @@ export default async function Home() {
             ))}
 
             {filming.unscheduled.length > 0 && (
-              <div className="p-4">
-                <p className="mb-2 text-xs uppercase tracking-wider text-faint">
+              <div className="p-4 sm:p-5">
+                <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
                   Undated backlog
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-2.5">
                   {filming.unscheduled.slice(0, 6).map((item) => (
                     <li key={item.id}>
                       <Link
                         href={`/content/${item.id}`}
-                        className="flex items-center justify-between gap-3 text-muted hover:text-gold"
+                        className="group flex items-center justify-between gap-3"
                       >
-                        <span className="text-sm">{item.title}</span>
+                        <span className="text-sm text-muted transition-colors group-hover:text-bone">
+                          {item.title}
+                        </span>
                         <StatusBadge status={item.status} />
                       </Link>
                     </li>
@@ -156,9 +170,13 @@ export default async function Home() {
 
       {/* Last week's numbers ------------------------------------------------ */}
       <section>
-        <h2 className="display mb-3 text-xl">
-          Last week <span className="text-base text-muted">· week {lastWeek.week}</span>
-        </h2>
+        <SectionTitle
+          aside={
+            <span className="text-[13px] text-faint">week {lastWeek.week}</span>
+          }
+        >
+          Last week
+        </SectionTitle>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat label="Views" value={nf.format(stats.views)} />
           <Stat label="Engagement" value={nf.format(stats.engagement)} />

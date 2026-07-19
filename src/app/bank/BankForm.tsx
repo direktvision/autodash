@@ -57,11 +57,7 @@ export function BankForm() {
               key={p}
               type="button"
               onClick={() => setPillar(p)}
-              className={`flex-1 rounded-xl border px-2 py-2 text-xs transition-colors ${
-                pillar === p
-                  ? 'border-gold/50 bg-gold/10 text-gold'
-                  : 'border-white/10 text-muted hover:text-bone'
-              }`}
+              className={pillar === p ? 'tile-active' : 'tile'}
             >
               {PILLAR_LABEL[p]}
             </button>

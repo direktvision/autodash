@@ -47,11 +47,7 @@ export default async function BankPage({
       <div className="mb-4 mt-8 flex flex-wrap gap-2">
         <Link
           href="/bank"
-          className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-            !pillar && !priority
-              ? 'border-gold/40 bg-gold/10 text-gold'
-              : 'border-white/10 text-muted hover:text-bone'
-          }`}
+          className={!pillar && !priority ? 'chip-active' : 'chip'}
         >
           All
         </Link>
@@ -59,11 +55,7 @@ export default async function BankPage({
           <Link
             key={p}
             href={pillar === p ? filterHref({ pillar: '' }) : filterHref({ pillar: p })}
-            className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-              pillar === p
-                ? 'border-gold/40 bg-gold/10 text-gold'
-                : 'border-white/10 text-muted hover:text-bone'
-            }`}
+            className={pillar === p ? 'chip-active' : 'chip'}
           >
             {PILLAR_LABEL[p]}
           </Link>
@@ -75,11 +67,7 @@ export default async function BankPage({
             href={
               priority === p ? filterHref({ priority: '' }) : filterHref({ priority: p })
             }
-            className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-              priority === p
-                ? 'border-gold/40 bg-gold/10 text-gold'
-                : 'border-white/10 text-muted hover:text-bone'
-            }`}
+            className={priority === p ? 'chip-active' : 'chip'}
           >
             {PRIORITY_LABEL[p]}
           </Link>

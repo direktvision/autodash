@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { saveShotList } from '@/lib/actions';
 import type { ShotListItem } from '@/lib/types';
+import { IconCheck, IconArrowUp, IconArrowDown, IconClose } from '@/components/icons';
 
 /**
  * Reordering uses up/down buttons rather than drag-and-drop: this gets used
@@ -81,13 +82,13 @@ export function ShotList({
               role="checkbox"
               aria-checked={shot.done}
               aria-label={shot.text}
-              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border text-xs transition-colors ${
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200 ${
                 shot.done
                   ? 'border-gold bg-gold text-noir'
-                  : 'border-white/20 hover:border-gold/50'
+                  : 'border-white/[0.18] hover:border-gold/50'
               }`}
             >
-              {shot.done ? '✓' : ''}
+              {shot.done && <IconCheck size={12} />}
             </button>
 
             <span
@@ -98,29 +99,29 @@ export function ShotList({
               {shot.text}
             </span>
 
-            <span className="flex shrink-0 items-center gap-0.5">
+            <span className="flex shrink-0 items-center">
               <button
                 onClick={() => move(i, -1)}
                 disabled={i === 0}
                 aria-label="Move up"
-                className="rounded px-1.5 py-1 text-xs text-faint hover:text-bone disabled:opacity-20"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-faint transition-colors hover:bg-white/[0.04] hover:text-bone disabled:opacity-20"
               >
-                ↑
+                <IconArrowUp size={13} />
               </button>
               <button
                 onClick={() => move(i, 1)}
                 disabled={i === shots.length - 1}
                 aria-label="Move down"
-                className="rounded px-1.5 py-1 text-xs text-faint hover:text-bone disabled:opacity-20"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-faint transition-colors hover:bg-white/[0.04] hover:text-bone disabled:opacity-20"
               >
-                ↓
+                <IconArrowDown size={13} />
               </button>
               <button
                 onClick={() => remove(shot.id)}
                 aria-label={`Remove ${shot.text}`}
-                className="rounded px-1.5 py-1 text-xs text-faint hover:text-pillar-conversion"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-faint transition-colors hover:bg-white/[0.04] hover:text-pillar-conversion"
               >
-                ✕
+                <IconClose size={13} />
               </button>
             </span>
           </li>

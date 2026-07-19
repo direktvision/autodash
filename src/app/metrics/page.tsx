@@ -17,10 +17,14 @@ const nf = new Intl.NumberFormat('en-GB');
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="card p-4">
-      <p className="text-xs uppercase tracking-wider text-muted">{label}</p>
-      <p className="display mt-1 text-2xl text-bone sm:text-3xl">{value}</p>
-      {hint && <p className="mt-0.5 text-xs text-faint">{hint}</p>}
+    <div className="card p-4 sm:p-5">
+      <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
+        {label}
+      </p>
+      <p className="display tnum mt-1.5 text-[2rem] leading-none text-bone sm:text-4xl">
+        {value}
+      </p>
+      {hint && <p className="mt-1.5 text-xs text-faint">{hint}</p>}
     </div>
   );
 }
@@ -69,11 +73,7 @@ export default async function MetricsPage({
   };
 
   const chip = (active: boolean) =>
-    `rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-      active
-        ? 'border-gold/40 bg-gold/10 text-gold'
-        : 'border-white/10 text-muted hover:text-bone'
-    }`;
+    active ? 'chip-active' : 'chip';
 
   return (
     <>

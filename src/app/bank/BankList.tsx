@@ -7,6 +7,7 @@ import { deleteBankItem, promoteBankItem } from '@/lib/actions';
 import { PillarBadge } from '@/components/ui';
 import { PRIORITY_LABEL, type BankItem, type Priority } from '@/lib/types';
 import { formatWeekRange, shiftIsoWeek, type IsoWeek } from '@/lib/dates';
+import { IconTrash } from '@/components/icons';
 
 const PRIORITY_STYLE: Record<Priority, string> = {
   high: 'text-pillar-conversion',
@@ -53,13 +54,13 @@ export function BankList({ items, week }: { items: BankItem[]; week: IsoWeek }) 
     <>
       {error && <p className="mb-3 text-sm text-pillar-conversion">{error}</p>}
 
-      <ul className="space-y-2">
+      <ul className="space-y-2.5">
         {items.map((item) => {
           const promoted = Boolean(item.promoted_to_item_id);
           return (
             <li
               key={item.id}
-              className={`card p-4 ${promoted ? 'opacity-60' : ''}`}
+              className={`card card-hover p-4 ${promoted ? 'opacity-60' : ''}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -87,9 +88,9 @@ export function BankList({ items, week }: { items: BankItem[]; week: IsoWeek }) 
                   onClick={() => remove(item.id)}
                   disabled={busy === item.id}
                   aria-label={`Delete ${item.title}`}
-                  className="shrink-0 rounded-lg px-2 py-1 text-muted transition-colors hover:bg-white/5 hover:text-pillar-conversion"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-faint transition-colors hover:bg-white/[0.04] hover:text-pillar-conversion"
                 >
-                  ✕
+                  <IconTrash size={14} />
                 </button>
               </div>
 
@@ -98,14 +99,14 @@ export function BankList({ items, week }: { items: BankItem[]; week: IsoWeek }) 
                   <button
                     onClick={() => promote(item.id, week)}
                     disabled={busy === item.id}
-                    className="rounded-lg border border-gold/30 bg-gold/10 px-3 py-1.5 text-xs text-gold transition-colors hover:bg-gold/20 disabled:opacity-40"
+                    className="inline-flex min-h-9 items-center rounded-lg border border-gold/30 bg-gold/[0.08] px-3 text-xs font-medium text-gold transition-all duration-200 hover:bg-gold/[0.15] active:scale-[0.98] disabled:opacity-40"
                   >
                     {busy === item.id ? 'Promoting…' : `This week · ${formatWeekRange(week)}`}
                   </button>
                   <button
                     onClick={() => promote(item.id, nextWeek)}
                     disabled={busy === item.id}
-                    className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-muted transition-colors hover:text-bone disabled:opacity-40"
+                    className="inline-flex min-h-9 items-center rounded-lg border border-white/[0.08] px-3 text-xs text-muted transition-all duration-200 hover:border-white/[0.16] hover:text-bone active:scale-[0.98] disabled:opacity-40"
                   >
                     Next week
                   </button>
